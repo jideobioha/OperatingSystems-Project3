@@ -51,6 +51,8 @@ struct proc {
   char name[16];               // Process name (debugging)
 
   int priority;
+
+  int binMask;                 // each process has its masks for signals they want to ignore
 };
 
 // Process memory is laid out contiguously, low addresses first:

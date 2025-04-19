@@ -600,3 +600,22 @@ p_stat(int pid)
 	release(&ptable.lock);
 	return ret;
 }
+
+int 
+SetMask(int targetPID, int mask){ // Sets the signal mask for the specified process using the provided mask
+
+  int found = 0; // nice to have a variable that will flag a process that doesn't exist
+  
+  //iterate through process table to find specified process
+  acquire(&ptable.lock);
+  for (struct proc* p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+    
+    if (p->pid == targetPID ) { // we have found the process we are trying to modify
+      found = 1; 
+      p->binMask = mask;
+    }
+  }
+  release(&ptable.lock);
+
+  return found;
+}

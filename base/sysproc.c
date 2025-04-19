@@ -126,4 +126,26 @@ sys_chpr(void)
   return chpr(pid, pr);
 }
 
+int
+sys_mask(void){
+  // figure out how to pass this mask to the process level. i think
+  // you have to use the myproc function to instatiate the process. 
+  int mask;
+  int pid = myproc()->pid; // get pid of current process
+
+  if(argint(0, &mask) < 0){
+    cprintf("\nFailed to get mask. Returning -1. \n");
+    return -1;
+  }
+
+  // call helper function defined in proc.c that accomplishes the purpose of this system call
+  int found = SetMask(pid, mask);
+
+  if (!found){ // should never happen
+    cprintf("process does not exist.\n");
+    return -1;
+  }
+
+  return 0;
+}
 
