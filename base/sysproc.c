@@ -178,7 +178,7 @@ sys_stop(void){
 
   if ((procMask & (1 << 1)) == 0 ){ // we are NOT masking sig_stop. i.e it will NOT be ignored
     // call stop helper function
-    int found = SigStop(PID);
+    int found = SigStop(pid);
 
     if (found == 0){
 

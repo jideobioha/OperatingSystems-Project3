@@ -2,7 +2,7 @@
 #include "stat.h"
 #include "user.h"
 
-//#define STUB_FUNCS
+#define STUB_FUNCS
 #ifndef STUB_FUNCS
 int mask(int m){}
 int term(int pid){}
