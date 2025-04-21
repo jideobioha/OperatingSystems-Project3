@@ -53,6 +53,7 @@ struct proc {
   int priority;
 
   int binMask;                 // each process has its masks for signals they want to ignore
+  int stopped;                 // flag gets set if process sig_stop blocks the process
 };
 
 // Process memory is laid out contiguously, low addresses first:

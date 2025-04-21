@@ -121,6 +121,9 @@ int             wait(void);
 void            wakeup(void*);
 void            yield(void);
 int             SetMask(int, int);
+int             SigStop(int);
+int             SigCont(int);
+int             GetForegroundProc(void);
 
 // swtch.S
 void            swtch(struct context**, struct context*);

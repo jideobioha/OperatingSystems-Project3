@@ -149,3 +149,93 @@ sys_mask(void){
   return 0;
 }
 
+int 
+sys_term(void){
+  int pid;
+
+  if(argint(0, &pid) < 0){
+    return -1;
+  }
+  int procMask = myproc()->binMask;
+
+  if ((procMask & (1 << 0)) == 0){ // we are NOT masking sig_term. i.e it will NOT be ignored
+    return kill(pid);
+  }
+
+  cprintf("\n SIG_TERM masked. It has been ignored. Returning 0. \n");
+  return 0;
+}
+
+int 
+sys_stop(void){
+  int pid;
+
+  if(argint(0, &pid) < 0){
+    return -1;
+  }
+
+  int procMask = myproc()->binMask;
+
+  if ((procMask & (1 << 1)) == 0 ){ // we are NOT masking sig_stop. i.e it will NOT be ignored
+    // call stop helper function
+    int found = SigStop(PID);
+
+    if (found == 0){
+
+      cprintf("\n Process not found. Returning -1. \n");
+      return -1;
+    
+    } else{
+      
+      return 0;
+    }  
+
+  }
+
+  cprintf("\n SIG_STOP masked. It has been ignored. Returning 0. \n");
+  return 0;
+}
+
+int
+sys_cont(void){
+  int pid;
+
+  if(argint(0, &pid) < 0){
+    return -1;
+  }
+
+  // call helper function that does cont
+  int found = SigCont(pid);
+
+  if (found == -1){
+    cprintf("\n Can't use SIG_CONT on process that was not stopped by SIG_STOP. Returning -1. \n");
+    return -1;
+  } else if (found == 0){
+    cprintf("\n Process not found. Returning -1. \n");
+    return -1;
+  }else { // process found and SIG_CONT accomplished
+    return 0;
+  }
+
+}
+
+int
+sys_interrupt(void){
+  int pid;
+
+  if(argint(0, &pid) < 0){
+    return -1;
+  }
+
+  int procMask = myproc()->binMask;
+
+  if ((procMask & (1 << 2)) == 0 ){ // we are NOT masking sig_int. i.e it will NOT be ignored
+    // call stop helper function
+    return kill(pid);
+  }
+
+  cprintf("\n SIG_INT masked. It has been ignored. Returning 0. \n");
+  return 0;
+
+}
+

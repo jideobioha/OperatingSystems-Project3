@@ -113,6 +113,10 @@ extern int sys_cps(void);
 extern int sys_chpr(void);
 extern int sys_pstat(void);
 extern int sys_mask(void);
+extern int sys_term(void);
+extern int sys_stop(void);
+extern int sys_cont(void);
+extern int sys_interrupt(void);
 
 static int (*syscalls[])(void) = {
 [SYS_fork]    sys_fork,
@@ -141,6 +145,11 @@ static int (*syscalls[])(void) = {
 [SYS_chpr]    sys_chpr,
 [SYS_pstat]   sys_pstat,
 [SYS_mask]    sys_mask,
+[SYS_term]    sys_term,
+[SYS_stop]    sys_stop,
+[SYS_cont]    sys_cont,
+[SYS_interrupt]     sys_interrupt, 
+
 };
 
 void

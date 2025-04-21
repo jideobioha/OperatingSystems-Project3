@@ -217,6 +217,12 @@ consoleintr(int (*getc)(void))
         consputc(BACKSPACE);
       }
       break;
+    case C('C'): // control + C - sig int
+      // get running process via helper
+      int fgPID = GetForegroundProc();
+      int sigIntReturn = sys_interrupt(fgPID);
+      
+      break;
     default:
       if(c != 0 && input.e-input.r < INPUT_BUF){
         c = (c == '\r') ? '\n' : c;

@@ -25,3 +25,7 @@
 #define SYS_chpr  24
 #define SYS_pstat 25
 #define SYS_mask 26
+#define SYS_term 27
+#define SYS_stop 28
+#define SYS_cont 29
+#define SYS_interrupt 30

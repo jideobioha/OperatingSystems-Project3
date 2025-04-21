@@ -619,3 +619,70 @@ SetMask(int targetPID, int mask){ // Sets the signal mask for the specified proc
 
   return found;
 }
+
+int SigStop(int PID){
+  // iterate through ptable find given process and change its state from RUNNING TO BLOCKED 
+  
+  int found = 0; // nice to have a variable that will flag a process that doesn't exist
+  
+  //iterate through process table to find specified process
+  acquire(&ptable.lock);
+  for (struct proc* p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+    
+    if (p->pid == PID ) { // we have found the process we are trying to modify
+      found = 1; 
+      p->stopped = 1;
+      p->state = BLOCKED;
+    }
+  }
+  release(&ptable.lock);
+
+  return found;
+}
+
+int 
+SigCont(int PID){
+
+  int found = 0; // nice to have a variable that will flag a process that doesn't exist
+  
+  //iterate through process table to find specified process
+  acquire(&ptable.lock);
+  for (struct proc* p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+    
+    if (p->pid == PID ) { // we have found the process we are trying to modify
+      found = 1; 
+
+      if (p->stopped){ // we can only cont signals that were stopped by SIG_STOP
+        p->stopped = 0; // clear flag
+        p->state = RUNNABLE;
+
+      }else {
+        found = -1; // can't do sig_cont to this process
+      }
+    }
+  }
+  release(&ptable.lock);
+
+  return found;
+}
+
+int
+GetForegroundProc(void){
+
+  struct proc* fgProc;
+  struct proc* p;
+
+  //iterate through process table to find specified process
+  acquire(&ptable.lock);
+  for (p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+      
+    if (p-> state == RUNNING && p->pid != 1){ // running process that isn't init process
+      fgProc = p;
+    }
+
+  }
+  release(&ptable.lock);
+
+  return fgProc->pid;
+
+}
