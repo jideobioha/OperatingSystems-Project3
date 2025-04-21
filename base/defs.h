@@ -124,6 +124,8 @@ int             SetMask(int, int);
 int             SigStop(int);
 int             SigCont(int);
 int             GetForegroundProc(void);
+struct proc*    GetProcess(int);
+int             interrupt(int);
 
 // swtch.S
 void            swtch(struct context**, struct context*);

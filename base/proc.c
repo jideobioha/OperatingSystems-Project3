@@ -669,14 +669,14 @@ SigCont(int PID){
 int
 GetForegroundProc(void){
 
-  struct proc* fgProc;
+  struct proc* fgProc = 0; // initialize to null just in case
   struct proc* p;
 
   //iterate through process table to find specified process
   acquire(&ptable.lock);
   for (p = ptable.proc; p < &ptable.proc[NPROC]; p++){
       
-    if (p-> state == RUNNING && p->pid != 1){ // running process that isn't init process
+    if (p->state == RUNNING && p->pid != 1){ // running process that isn't init process
       fgProc = p;
     }
 
@@ -685,4 +685,29 @@ GetForegroundProc(void){
 
   return fgProc->pid;
 
+}
+
+struct proc*
+GetProcess(int PID){ // returns pointer of process with id = PID
+  
+  struct proc* p;
+  struct proc* targetProcess = 0;
+
+  //iterate through process table to find specified process
+  acquire(&ptable.lock);
+  for (p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+      
+    if (p->pid == PID){ // running process that isn't init process
+      targetProcess = p;
+    }
+
+  }
+  release(&ptable.lock);
+
+  return targetProcess;
+}
+
+int 
+interrupt(int PID){
+  return kill(PID);
 }

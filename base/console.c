@@ -220,7 +220,7 @@ consoleintr(int (*getc)(void))
     case C('C'): // control + C - sig int
       // get running process via helper
       int fgPID = GetForegroundProc();
-      int sigIntReturn = sys_interrupt(fgPID);
+      interrupt(fgPID);
       
       break;
     default:
