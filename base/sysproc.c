@@ -234,23 +234,14 @@ sys_interrupt(void){
     return -1;
   }
 
-  int procMask;
-  struct proc* targetProc = GetProcess(pid);
+  return interrupt(pid);
 
-  if (targetProc == 0){
-    cprintf("\nProcess does not exist. Returning -1. \n");
-    return -1;
-  }
+}
 
-  procMask = targetProc->binMask;
+int 
+sys_fgProc(void){
 
-  if ((procMask & (1 << 2)) == 0 ){ // we are NOT masking sig_int. i.e it will NOT be ignored
-    // call stop helper function
-    return interrupt(pid);
-  }
-
-  cprintf("\nSIG_INT masked. It has been ignored. Returning 0. \n");
-  return 0;
-
+  //cprintf("\n^C\n");
+  return KillForegroundProc();
 }
 

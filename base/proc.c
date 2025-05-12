@@ -667,24 +667,28 @@ SigCont(int PID){
 }
 
 int
-GetForegroundProc(void){
+KillForegroundProc(void){
 
-  struct proc* fgProc = 0; // initialize to null just in case
+  cprintf("\n^C\n");
+
+  struct proc* fgProcess = 0; // set to zero for initialization safety
   struct proc* p;
 
   //iterate through process table to find specified process
   acquire(&ptable.lock);
   for (p = ptable.proc; p < &ptable.proc[NPROC]; p++){
       
-    if (p->state == RUNNING && p->pid != 1){ // running process that isn't init process
-      fgProc = p;
+    if (p != initproc && p->pid != 2){ // running process that isn't init process
+      fgProcess = p;
+      break;
     }
 
   }
   release(&ptable.lock);
 
-  return fgProc->pid;
+  kill(fgProcess->pid); // kill foreground process
 
+  return 0;
 }
 
 struct proc*
@@ -709,5 +713,23 @@ GetProcess(int PID){ // returns pointer of process with id = PID
 
 int 
 interrupt(int PID){
-  return kill(PID);
+
+  int procMask;
+  struct proc* targetProc = GetProcess(PID);
+
+  if (targetProc == 0){
+    cprintf("\nProcess does not exist. Returning -1. \n");
+    return -1;
+  }
+
+  procMask = targetProc->binMask;
+
+  if ((procMask & (1 << 2)) == 0 ){ // we are NOT masking sig_int. i.e it will NOT be ignored
+    // call stop helper function
+    return kill(PID);
+  }
+
+  cprintf("\nSIG_INT masked. It has been ignored. Returning 0. \n");
+  return 0;
+
 }

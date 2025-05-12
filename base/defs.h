@@ -123,7 +123,7 @@ void            yield(void);
 int             SetMask(int, int);
 int             SigStop(int);
 int             SigCont(int);
-int             GetForegroundProc(void);
+int             KillForegroundProc(void);
 struct proc*    GetProcess(int);
 int             interrupt(int);
 

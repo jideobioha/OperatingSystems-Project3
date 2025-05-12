@@ -19,6 +19,7 @@ static void consputc(int);
 
 static int panicked = 0;
 
+  
 static struct {
   struct spinlock lock;
   int locking;
@@ -195,7 +196,7 @@ struct {
 void
 consoleintr(int (*getc)(void))
 {
-  int c, doprocdump = 0;   
+  int c, doprocdump = 0, dokillfg = 0;   
 
   acquire(&cons.lock);
   while((c = getc()) >= 0){
@@ -218,10 +219,8 @@ consoleintr(int (*getc)(void))
       }
       break;
     case C('C'): // control + C - sig int
-      // get running process via helper
-      int fgPID = GetForegroundProc();
-      interrupt(fgPID);
-      
+      dokillfg = 1;
+
       break;
     default:
       if(c != 0 && input.e-input.r < INPUT_BUF){
@@ -239,6 +238,10 @@ consoleintr(int (*getc)(void))
   release(&cons.lock);
   if(doprocdump) {
     procdump();  // now call procdump() wo. cons.lock held
+  }
+
+  if(dokillfg){
+    KillForegroundProc();
   }
 }
 

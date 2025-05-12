@@ -31,6 +31,7 @@ int term(int PID);
 int stop(int PID);
 int cont(int PID);
 int interrupt(int PID);
+int fgProc(void);
 
 // ulib.c
 int stat(char*, struct stat*);
