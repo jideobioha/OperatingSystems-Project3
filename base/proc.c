@@ -678,7 +678,7 @@ KillForegroundProc(void){
   acquire(&ptable.lock);
   for (p = ptable.proc; p < &ptable.proc[NPROC]; p++){
       
-    if (p != initproc && p->pid != 2){ // running process that isn't init process
+    if (p != initproc && p->pid != 2){ // running process that isn't init process or shell
       fgProcess = p;
       break;
     }
